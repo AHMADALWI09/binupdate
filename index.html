@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Input Bin Update</title>
+  <style>
+    body {
+      background-color: #696969;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #00FF00;
+    }
+    .container {
+      background-color: #696969;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .form-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      width: 120px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .form-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #000;
+      background-color: #fff;
+      font-size: 16px;
+      color: #000;
+    }
+    /* CSS Khusus untuk kolom Combine */
+    #combine {
+      text-align: center; /* Teks di tengah */
+      background-color: #e0e0e0; /* Warna abu-abu tanda otomatis */
+      font-weight: bold;
+      color: #333;
+    }
+    .btn-container {
+      text-align: center;
+      margin-top: 25px;
+    }
+    button {
+      background-color: #FFC000;
+      color: blue;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 12px 40px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+    button:hover { background-color: #e0a800; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    #status { text-align: center; margin-top: 15px; font-weight: bold; color: #FFD700; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <form id="inputForm" action="https://script.google.com/macros/s/AKfycbxLVpXPpeIimdAh4fo5kWwrclSdDvAn25ua17g39F2tKnYfiLEOOOVLotYArAZStgRg/exec" method="POST" target="hidden_iframe" onsubmit="mulaiSimpan()">
+      
+      <div class="form-group">
+        <label>Date Update</label>
+        <input type="date" name="tanggal" required>
+      </div>
+      
+      <!-- Tambahan oninput="generateCombine()" pada Material dan Batch -->
+      <div class="form-group">
+        <label>Combine</label>
+        <input type="text" id="combine" name="combine" readonly required>
+      </div>
+      
+      <div class="form-group">
+        <label>Material</label>
+        <input type="text" id="material" name="material" oninput="generateCombine()" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Batch</label>
+        <input type="text" id="batch" name="batch" oninput="generateCombine()" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Bin Location</label>
+        <input type="text" id="binLocation" name="binLocation">
+      </div>
+      
+      <div class="btn-container">
+        <button type="submit" id="btnSubmit">INPUT</button>
+      </div>
+      <div id="status"></div>
+    </form>
+  </div>
+
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { selesaiSimpan(); }"></iframe>
+
+  <script>
+    var submitted = false;
+
+    // FUNGSI UNTUK MENGGABUNGKAN MATERIAL DAN BATCH
+    function generateCombine() {
+      var material = document.getElementById("material").value.trim();
+      var batch = document.getElementById("batch").value.trim();
+      var combineInput = document.getElementById("combine");
+
+      // Jika keduanya terisi, gabungkan dengan tanda strip (-)
+      if (material !== "" && batch !== "") {
+        combineInput.value = material + "-" + batch;
+      } 
+      // Jika hanya material yang terisi
+      else if (material !== "") {
+        combineInput.value = material;
+      } 
+      // Jika hanya batch yang terisi
+      else if (batch !== "") {
+        combineInput.value = batch;
+      } 
+      // Jika keduanya kosong
+      else {
+        combineInput.value = "";
+      }
+    }
+
+    function mulaiSimpan() {
+      submitted = true;
+      var btn = document.getElementById("btnSubmit");
+      var status = document.getElementById("status");
+      btn.disabled = true;
+      btn.innerText = "MENYIMPAN...";
+      status.innerText = "";
+    }
+
+    function selesaiSimpan() {
+      var btn = document.getElementById("btnSubmit");
+      var status = document.getElementById("status");
+      var form = document.getElementById("inputForm");
+      
+      status.innerText = "Data berhasil disimpan!";
+      form.reset();
+      btn.disabled = false;
+      btn.innerText = "INPUT";
+      submitted = false;
+    }
+  </script>
+
+</body>
+</html>
